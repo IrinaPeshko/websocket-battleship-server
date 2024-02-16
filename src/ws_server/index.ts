@@ -1,5 +1,5 @@
 import WebSocket, { Server } from 'ws';
-import { IReg } from '../types/types';
+import { IMessage } from '../types/types';
 import { deleteUser } from '../api/dataBase';
 import { colorConsole } from '../utils/colorConsole';
 import { handleMessage } from '../api/handleMessages';
@@ -14,14 +14,12 @@ export const startWebSocket = () => {
     colorConsole.blue(`New client connected`);
 
     socket.on('message', (messageData: WebSocket.RawData) => {
-      const message: IReg = JSON.parse(messageData.toString());
+      const message: IMessage = JSON.parse(messageData.toString());
       console.log('Parsed message from client:', message);
 
       const { type, data } = message;
-      const { name, password } = JSON.parse(data.toString());
-      console.log(`Name: ${name}, Password: ${password}`);
 
-      handleMessage(socket, type, name, password, clientMap);
+      handleMessage(socket, type, data, clientMap);
     });
 
     socket.on('close', () => {

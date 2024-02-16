@@ -1,6 +1,6 @@
-interface IMessage {
+export interface IMessage {
   type: string;
-  data: object;
+  data: string | object;
   id: number;
 }
 
@@ -17,4 +17,30 @@ export interface IUser {
   index: number;
   name: string;
   password: string;
+  countOfWins: number;
 }
+
+export interface IRoom {
+  roomId: number;
+  users: IUser[];
+}
+
+// interface IUserInRoom {
+//   name: string;
+//   index: number;
+// }
+
+// interface IUpdateRoomMessage extends IMessage {
+//   data: {
+//     roomId: number;
+//     roomUsers: IUserInRoom[];
+//   }[];
+// }
+
+export interface IWinner {
+  name: string;
+  wins: number;
+}
+// interface IUpdateWinnersMessage extends IMessage {
+//   data: IWinner[];
+// }

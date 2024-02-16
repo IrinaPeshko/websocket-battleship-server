@@ -11,7 +11,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "format": "prettier --write \"src/**/*.ts\""
     },
-    "author": "Andrei Auchynnikau",
+    "author": "Irina Peshko",
     "keywords": [],
     "license": "ISC",
     "devDependencies": {
