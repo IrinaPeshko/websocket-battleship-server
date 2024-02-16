@@ -12,7 +12,7 @@ export const createNewRoom = (
     const user = getUserById(userId);
     if (user) {
       addNewRoom(user);
-      updateRooms(socket);
+      updateRooms(clientMap);
       colorConsole.green(`The room with id "${userId}" has been created`);
     } else {
       colorConsole.red(`The user with id "${userId}" is not found`);

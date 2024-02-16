@@ -93,6 +93,6 @@ export const registerUser = (
   }
 
   socket.send(JSON.stringify(response));
-  updateWinners(socket);
-  updateRooms(socket);
+  updateWinners(clientMap);
+  updateRooms(clientMap);
 };

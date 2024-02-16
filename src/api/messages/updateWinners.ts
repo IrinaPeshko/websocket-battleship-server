@@ -1,7 +1,7 @@
 import { getWinners } from '../dataBase';
 import WebSocket from 'ws';
 
-export const updateWinners = (socket: WebSocket) => {
+export const updateWinners = (clientMap: Map<WebSocket, number>) => {
   const winners = getWinners();
 
   const response = {
@@ -9,5 +9,7 @@ export const updateWinners = (socket: WebSocket) => {
     data: JSON.stringify(winners),
     id: 0,
   };
-  socket.send(JSON.stringify(response));
+  clientMap.forEach((_, socket) => {
+    socket.send(JSON.stringify(response));
+  });
 };
