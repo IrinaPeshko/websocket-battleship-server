@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 import { registerUser } from './messages/reg';
 import { createNewRoom } from './messages/createNewRoom';
+import { addUserToRoom } from './messages/addUserToRoom';
 
 export const handleMessage = (
   socket: WebSocket,
@@ -12,6 +13,8 @@ export const handleMessage = (
     registerUser(socket, data, clientMap);
   } else if (type === 'create_room') {
     createNewRoom(socket, clientMap);
+  } else if (type === 'add_user_to_room') {
+    addUserToRoom(socket, data, clientMap);
   } else {
     console.log('else');
   }

@@ -11,9 +11,11 @@ export const createNewRoom = (
   if (userId) {
     const user = getUserById(userId);
     if (user) {
-      addNewRoom(user);
-      updateRooms(clientMap);
-      colorConsole.green(`The room with id "${userId}" has been created`);
+      const isCreated = addNewRoom(user);
+      if (isCreated) {
+        updateRooms(clientMap);
+        colorConsole.green(`The room with id "${userId}" has been created`);
+      }
     } else {
       colorConsole.red(`The user with id "${userId}" is not found`);
     }
