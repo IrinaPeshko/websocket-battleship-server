@@ -41,7 +41,7 @@ class RoomData {
   };
 
   public addNewRoom = (user: IUser) => {
-    const rooms = this.getRooms();
+    const rooms = this.getRooms()
     if (rooms.find((room) => room.users[0].index === user.index)) {
       colorConsole.red(
         `The user with index "${user.index}" has already created the room`,
@@ -64,7 +64,7 @@ class RoomData {
 
     if (targetRoomIndex === -1) {
       colorConsole.red(`Error: Room with ID ${indexRoom} does not exist.`);
-      return false;
+      return null;
     }
 
     const targetRoom = rooms[targetRoomIndex];
@@ -72,20 +72,31 @@ class RoomData {
       colorConsole.red(
         `Attempt failed: User "${user.name}" (index: ${user.index}) cannot join their own room (Room ID: ${targetRoom.roomId}).`,
       );
-      return false;
+      return null;
     }
-    this.removeUserFromOtherRooms(user, rooms);
+    this.deleteRoom(user.index);
     targetRoom.users.push(user);
     colorConsole.green(
       `Success: User "${user.name}" (index: ${user.index}) has been successfully added to Room ID: ${targetRoom.roomId}.`,
     );
-    return true;
+    return indexRoom;
   };
 
   public getPlayers = (id: number) => {
     const rooms = this.getRooms();
-    const currentRoom = rooms.find((room) => room.roomId === id);
+    const currentRoom = rooms.find((room) => {
+      return room.roomId === id;
+    });
     return currentRoom?.users;
+  };
+
+  public deleteRoom = (id: number) => {
+    const rooms = this.getRooms();
+    const roomIndex = rooms.findIndex((room) => room.roomId === id);
+    if (roomIndex !== -1) {
+      rooms.splice(roomIndex, 1);
+      colorConsole.yellow(`The room with id "${id}" has been deleted`)
+    }
   };
 }
 

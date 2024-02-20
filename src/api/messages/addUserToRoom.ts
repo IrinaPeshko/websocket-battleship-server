@@ -12,6 +12,7 @@ export const addUserToRoom = (
   const userId = clientMap.get(socket);
   if (userId) {
     const user = userData.getUserById(userId);
+
     if (!user) {
       colorConsole.red(
         `Failed to identify user for the given WebSocket connection.`,
@@ -19,11 +20,11 @@ export const addUserToRoom = (
       return;
     }
     const { indexRoom } = JSON.parse(data.toString());
-    const isAdded = roomData.addToRoom(user, indexRoom);
-    if (isAdded) {
+    const addedRoomIndex = roomData.addToRoom(user, indexRoom);
+    if (addedRoomIndex) {
+      createGame(addedRoomIndex, userId, clientMap);
       updateRooms(clientMap);
     }
-    createGame(indexRoom, userId, clientMap);
   }
 };
 
