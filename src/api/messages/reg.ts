@@ -1,10 +1,10 @@
 import WebSocket from 'ws';
 import { IUser } from '../../types/types';
 import { getUserIndex } from '../../utils/getUserIndex';
-import { addNewUser, isUserExist } from '../dataBase';
 import { updateWinners } from './updateWinners';
 import { updateRooms } from './updateRoom';
 import { colorConsole } from '../../utils/colorConsole';
+import { userData } from '../../dataBase/userDB';
 
 export const registerUser = (
   socket: WebSocket,
@@ -13,8 +13,8 @@ export const registerUser = (
 ) => {
   const { name, password } = JSON.parse(data.toString());
 
-  const isUserRegister = isUserExist(name, password, 'register');
-  const isUserLogin = isUserExist(name, password, 'login');
+  const isUserRegister = userData.isUserExist(name, password, 'register');
+  const isUserLogin = userData.isUserExist(name, password, 'login');
 
   let response: {
     type?: string;
@@ -41,8 +41,8 @@ export const registerUser = (
       password: password,
       countOfWins: 0,
     };
-    addNewUser(newUser, 'login');
-    addNewUser(newUser, 'register');
+    userData.addNewUser(newUser, 'login');
+    userData.addNewUser(newUser, 'register');
     colorConsole.green(
       `User with name "${name}" and password "${password}" has been registered and logged in.`,
     );
@@ -64,7 +64,7 @@ export const registerUser = (
       password: password,
       countOfWins: isUserRegister.countOfWins,
     };
-    addNewUser(newUser, 'login');
+    userData.addNewUser(newUser, 'login');
     colorConsole.green(
       `User with name "${name}" and password "${password}" has been logged in.`,
     );

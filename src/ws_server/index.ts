@@ -1,8 +1,8 @@
 import WebSocket, { Server } from 'ws';
 import { IMessage } from '../types/types';
-import { deleteUser } from '../api/dataBase';
 import { colorConsole } from '../utils/colorConsole';
 import { handleMessage } from '../api/handleMessages';
+import { userData } from '../dataBase/userDB';
 
 export const startWebSocket = () => {
   const PORT = 3000;
@@ -25,7 +25,7 @@ export const startWebSocket = () => {
     socket.on('close', () => {
       const userIndex = clientMap.get(socket);
       if (userIndex !== undefined) {
-        deleteUser(userIndex);
+        userData.deleteUser(userIndex);
         clientMap.delete(socket);
       }
       colorConsole.blue(`Client with index ${userIndex} disconnected`);

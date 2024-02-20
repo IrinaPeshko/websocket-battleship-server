@@ -1,8 +1,8 @@
-import { getRoomsData } from '../dataBase';
+import { roomData } from '../../dataBase/roomDB';
 import WebSocket from 'ws';
 
 export const updateRooms = (clientMap: Map<WebSocket, number>) => {
-  const roomsData = getRoomsData();
+  const roomsData = roomData.getRoomsData();
   const response = {
     type: 'update_room',
     data: JSON.stringify(roomsData),

@@ -1,7 +1,8 @@
 import WebSocket from 'ws';
-import { addToRoom, getPlayers, getUserById } from '../dataBase';
 import { colorConsole } from '../../utils/colorConsole';
 import { updateRooms } from './updateRoom';
+import { userData } from '../../dataBase/userDB';
+import { roomData } from '../../dataBase/roomDB';
 
 export const addUserToRoom = (
   socket: WebSocket,
@@ -10,7 +11,7 @@ export const addUserToRoom = (
 ) => {
   const userId = clientMap.get(socket);
   if (userId) {
-    const user = getUserById(userId);
+    const user = userData.getUserById(userId);
     if (!user) {
       colorConsole.red(
         `Failed to identify user for the given WebSocket connection.`,
@@ -18,7 +19,7 @@ export const addUserToRoom = (
       return;
     }
     const { indexRoom } = JSON.parse(data.toString());
-    const isAdded = addToRoom(user, indexRoom);
+    const isAdded = roomData.addToRoom(user, indexRoom);
     if (isAdded) {
       updateRooms(clientMap);
     }
@@ -41,7 +42,7 @@ const createGame = (
     id: 0,
   };
 
-  const players = getPlayers(roomId);
+  const players = roomData.getPlayers(roomId);
   if (!players) {
     colorConsole.red(`Room with ID "${roomId}" is empty`);
     return;

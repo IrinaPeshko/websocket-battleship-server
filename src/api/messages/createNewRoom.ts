@@ -1,7 +1,8 @@
 import { colorConsole } from '../../utils/colorConsole';
-import { addNewRoom, getUserById } from '../dataBase';
 import WebSocket from 'ws';
 import { updateRooms } from './updateRoom';
+import { userData } from '../../dataBase/userDB';
+import { roomData } from '../../dataBase/roomDB';
 
 export const createNewRoom = (
   socket: WebSocket,
@@ -9,9 +10,9 @@ export const createNewRoom = (
 ) => {
   const userId = clientMap.get(socket);
   if (userId) {
-    const user = getUserById(userId);
+    const user = userData.getUserById(userId);
     if (user) {
-      const isCreated = addNewRoom(user);
+      const isCreated = roomData.addNewRoom(user);
       if (isCreated) {
         updateRooms(clientMap);
         colorConsole.green(`The room with id "${userId}" has been created`);

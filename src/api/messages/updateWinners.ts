@@ -1,8 +1,8 @@
-import { getWinners } from '../dataBase';
+import { userData } from '../../dataBase/userDB';
 import WebSocket from 'ws';
 
 export const updateWinners = (clientMap: Map<WebSocket, number>) => {
-  const winners = getWinners();
+  const winners = userData.getWinners();
 
   const response = {
     type: 'update_winners',
