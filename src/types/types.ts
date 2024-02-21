@@ -13,6 +13,20 @@ interface IRegData {
   password: string;
 }
 
+export interface IShipsData extends IMessage {
+  data: { gameId: number; ships: IShip[]; indexPlayer: number };
+}
+
+interface IShip {
+  position: {
+    x: number;
+    y: number;
+  };
+  direction: boolean;
+  type: 'huge' | 'large' | 'medium' | 'small';
+  length: number;
+}
+
 export interface IUser {
   index: number;
   name: string;
@@ -25,22 +39,19 @@ export interface IRoom {
   users: IUser[];
 }
 
-// interface IUserInRoom {
-//   name: string;
-//   index: number;
-// }
-
-// interface IUpdateRoomMessage extends IMessage {
-//   data: {
-//     roomId: number;
-//     roomUsers: IUserInRoom[];
-//   }[];
-// }
-
 export interface IWinner {
   name: string;
   wins: number;
 }
-// interface IUpdateWinnersMessage extends IMessage {
-//   data: IWinner[];
-// }
+
+export interface IGame {
+  gameID: number;
+  player1: IPlayer;
+  player2: IPlayer;
+}
+
+interface IPlayer {
+  userId: number;
+  playerId: number;
+  ships?: IShip[];
+}

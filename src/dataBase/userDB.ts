@@ -55,7 +55,7 @@ class UserData {
     const userIndex = this.loginUserDB.findIndex((user) => {
       user.index === userId;
     });
-    
+
     if (userIndex !== -1) {
       colorConsole.red(`User with index "${userId}" is not found.`);
       return false;

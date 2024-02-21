@@ -4,7 +4,7 @@ import { colorConsole } from '../utils/colorConsole';
 import { handleMessage } from '../api/handleMessages';
 import { userData } from '../dataBase/userDB';
 import { roomData } from '../dataBase/roomDB';
-import { updateRooms } from '../api/messages/updateRoom';
+import { updateRooms } from '../api/userMessages/updateRoom';
 
 export const startWebSocket = () => {
   const PORT = 3000;
@@ -28,8 +28,9 @@ export const startWebSocket = () => {
       const userIndex = clientMap.get(socket);
       if (userIndex !== undefined) {
         userData.deleteUser(userIndex);
-        roomData.deleteRoom(userIndex)
-        updateRooms(clientMap)
+        roomData.deleteRoom(userIndex, clientMap);
+        updateRooms(clientMap);
+        roomData.removeRoomsWithUser(userIndex, clientMap);
         clientMap.delete(socket);
       }
       colorConsole.blue(`Client with index ${userIndex} disconnected`);
