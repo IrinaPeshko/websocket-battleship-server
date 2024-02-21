@@ -5,12 +5,12 @@ import { gameData } from '../../dataBase/gameDB';
 
 export const createGame = (
   roomId: number,
-  userID: number,
+  userId: number,
   clientMap: Map<WebSocket, number>,
 ) => {
   const players = roomData.getPlayers(roomId);
   if (!players) {
-    colorConsole.red(`Room with ID "${roomId}" is empty`);
+    colorConsole.red(`Room with id "${roomId}" is empty`);
     return;
   }
 
@@ -40,10 +40,10 @@ export const createGame = (
   }
 };
 
-const createResponse = (roomId: number, userID: number) => {
+const createResponse = (roomId: number, userId: number) => {
   const data = JSON.stringify({
     idGame: roomId,
-    idPlayer: userID,
+    idPlayer: userId,
   });
   const response = {
     type: 'create_game',

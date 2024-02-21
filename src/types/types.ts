@@ -14,10 +14,12 @@ interface IRegData {
 }
 
 export interface IShipsData extends IMessage {
-  data: { gameId: number; ships: IShip[]; indexPlayer: number };
+  gameId: number;
+  ships: IShip[];
+  indexPlayer: number;
 }
 
-interface IShip {
+export interface IShip {
   position: {
     x: number;
     y: number;
@@ -45,7 +47,7 @@ export interface IWinner {
 }
 
 export interface IGame {
-  gameID: number;
+  gameId: number;
   player1: IPlayer;
   player2: IPlayer;
 }

@@ -2,18 +2,18 @@ import WebSocket from 'ws';
 import { gameData } from '../../dataBase/gameDB';
 
 export const finishGame = (
-  winID: number,
+  winId: number,
   socket: WebSocket,
-  gameID: number,
+  gameId: number,
 ) => {
   const response = {
     type: 'finish',
     data: JSON.stringify({
-      winPlayer: winID,
+      winPlayer: winId,
     }),
     id: 0,
   };
   socket.send(JSON.stringify(response));
 
-  gameData.deleteGame(gameID);
+  gameData.deleteGame(gameId);
 };

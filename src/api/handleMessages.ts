@@ -17,7 +17,7 @@ export const handleMessage = (
   } else if (type === 'add_user_to_room') {
     addUserToRoom(socket, data, clientMap);
   } else if (type === 'add_ships') {
-    addShips(socket, data, clientMap);
+    addShips(data, clientMap);
   } else {
     console.log('else');
   }

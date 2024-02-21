@@ -59,14 +59,14 @@ class RoomData {
     );
 
     if (targetRoomIndex === -1) {
-      colorConsole.red(`Error: Room with ID ${indexRoom} does not exist.`);
+      colorConsole.red(`Error: Room with id ${indexRoom} does not exist.`);
       return null;
     }
 
     const targetRoom = rooms[targetRoomIndex];
     if (targetRoom.roomId === user.index) {
       colorConsole.red(
-        `Attempt failed: User "${user.name}" (index: ${user.index}) cannot join their own room (Room ID: ${targetRoom.roomId}).`,
+        `Attempt failed: User "${user.name}" (index: ${user.index}) cannot join their own room (Room id: ${targetRoom.roomId}).`,
       );
       return null;
     }
@@ -117,7 +117,7 @@ class RoomData {
       if (userFound) {
         rooms.splice(i, 1);
         colorConsole.yellow(
-          `The room with ID "${room.roomId}" with user with ID "${userIndex}"has been removed`,
+          `The room with id "${room.roomId}" with user with id "${userIndex}"has been removed`,
         );
         if (room.users.length === 2) {
           for (const [socket, userId] of clientMap.entries()) {
