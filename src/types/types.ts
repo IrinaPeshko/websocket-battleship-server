@@ -74,6 +74,7 @@ interface IPlayer {
   userId: number;
   playerId: number;
   ownBoard: ownShip[][];
+  killedShipsCount: number;
   enemyBoard: CellType[][];
   ships?: IShip[];
 }

@@ -52,15 +52,14 @@ class UserData {
   };
 
   public deleteUser = (userId: number) => {
-    const userIndex = this.loginUserDB.findIndex((user) => {
-      user.index === userId;
-    });
-
-    if (userIndex !== -1) {
+    const users = this.getUsers('login');
+    const userIndex = users.findIndex((user) => user.index === userId);
+    if (userIndex === -1) {
       colorConsole.red(`User with index "${userId}" is not found.`);
       return false;
     }
-    this.loginUserDB.splice(userIndex, 1);
+    users.splice(userIndex, 1);
+    colorConsole.yellow(`User with index "${userId}" has been deleted.`);
     return true;
   };
 

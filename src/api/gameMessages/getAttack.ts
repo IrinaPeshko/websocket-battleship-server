@@ -1,8 +1,12 @@
 import { gameData } from '../../dataBase/gameDB';
 import WebSocket from 'ws';
 import { colorConsole } from '../../utils/colorConsole';
+import { finishGame } from './finishGame';
+import { roomData } from '../../dataBase/roomDB';
+import { updateRooms } from '../userMessages/updateRoom';
 
 export const getAttack = (
+  socket: WebSocket,
   data: string | object,
   clientMap: Map<WebSocket, number>,
 ) => {
@@ -11,6 +15,7 @@ export const getAttack = (
   if (isPlayerTern) {
     const resultAttack = gameData.getAttackResult(gameId, indexPlayer, x, y);
     const game = gameData.getGameById(gameId);
+    let isWin = false;
     if (resultAttack && game) {
       let requestStatus: 'miss' | 'shot' | 'killed' =
         resultAttack === 'empty' ? 'miss' : 'shot';
@@ -20,7 +25,7 @@ export const getAttack = (
         id: number;
       }[] = [];
       if (requestStatus === 'shot') {
-        const killedShip = gameData.hitsCount(gameId, indexPlayer, x, y);
+        const killedShip = gameData.checkKilledShip(gameId, indexPlayer, x, y);
         if (killedShip) {
           requestStatus = 'killed';
           for (const partShip of killedShip) {
@@ -32,6 +37,7 @@ export const getAttack = (
             );
             responses.push(response);
           }
+          isWin = gameData.checkFinishGame(gameId, indexPlayer);
         } else {
           const response = createResponse(indexPlayer, requestStatus, x, y);
           responses.push(response);
@@ -54,6 +60,20 @@ export const getAttack = (
           });
         }
       });
+
+      if (isWin) {
+        clientMap.forEach((playerIndex, playerSocket) => {
+          if (
+            playerIndex === game.player1.userId ||
+            playerIndex === game.player2.userId
+          ) {
+            finishGame(indexPlayer, playerSocket, gameId);
+          }
+        });
+        gameData.deleteGame(game.gameId);
+        roomData.deleteRoom(game.gameId);
+        updateRooms(clientMap);
+      }
     }
   }
 };

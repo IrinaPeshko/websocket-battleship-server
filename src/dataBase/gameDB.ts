@@ -18,6 +18,15 @@ class GameData {
     return games.find((game) => game.gameId === gameId);
   };
 
+  public getGameWithPlayer = (userId: number) => {
+    const games = this.getGames();
+    const game = games.find(
+      (game) =>
+        game.player1.userId === userId || game.player2.userId === userId,
+    );
+    return game;
+  };
+
   public createGame = (gameId: number, user1Id: number, user2Id: number) => {
     const games = this.getGames();
     const game: IGame = {
@@ -26,12 +35,14 @@ class GameData {
       player1: {
         userId: user1Id,
         playerId: 1,
+        killedShipsCount: 0,
         enemyBoard: initializeBoard(10),
         ownBoard: initializeOwnBoard(10),
       },
       player2: {
         userId: user2Id,
         playerId: 2,
+        killedShipsCount: 0,
         enemyBoard: initializeBoard(10),
         ownBoard: initializeOwnBoard(10),
       },
@@ -44,7 +55,7 @@ class GameData {
     const gameIndex = games.findIndex((game) => game.gameId === gameId);
     if (gameIndex !== -1) {
       games.splice(gameIndex, 1);
-      colorConsole.yellow(`Game with ID ${gameId} has been deleted.`);
+      colorConsole.yellow(`Game with id ${gameId} has been deleted.`);
     }
   };
 
@@ -105,7 +116,7 @@ class GameData {
     return true;
   };
 
-  public hitsCount = (
+  public checkKilledShip = (
     gameId: number,
     indexPlayer: number,
     x: number,
@@ -127,6 +138,9 @@ class GameData {
         colorConsole.magenta(
           `Ship with length ${currentCell.currentShip.length} has been sunk!`,
         );
+        const player = indexPlayer === 1 ? 'player1' : 'player2';
+        game[player].killedShipsCount += 1;
+        console.log(game[player]);
         return currentCell.currentShip.shipParts;
       } else {
         colorConsole.magenta(
@@ -136,6 +150,25 @@ class GameData {
     } else {
       console.log('No ship at this cell or cell already hit');
       return null;
+    }
+  };
+
+  public checkFinishGame = (
+    gameId: number,
+    indexPlayer: number,
+    shipCount: number = 10,
+  ) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return false;
+    }
+    const player = indexPlayer === 1 ? 'player1' : 'player2';
+    const killedShip = game[player].killedShipsCount;
+    if (killedShip === shipCount) {
+      return true;
+    } else {
+      return false;
     }
   };
 }

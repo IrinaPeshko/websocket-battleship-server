@@ -1,7 +1,5 @@
-import { finishGame } from '../api/gameMessages/finishGame';
 import { IRoom, IUser } from '../types/types';
 import { colorConsole } from '../utils/colorConsole';
-import WebSocket from 'ws';
 
 class RoomData {
   private roomDB: IRoom[] = [];
@@ -48,11 +46,7 @@ class RoomData {
     return true;
   };
 
-  public addToRoom = (
-    user: IUser,
-    indexRoom: number,
-    clientMap: Map<WebSocket, number>,
-  ) => {
+  public addToRoom = (user: IUser, indexRoom: number) => {
     const rooms = this.getRooms();
     const targetRoomIndex = rooms.findIndex(
       (room) => room.roomId === indexRoom,
@@ -70,7 +64,7 @@ class RoomData {
       );
       return null;
     }
-    this.deleteRoom(user.index, clientMap);
+    this.deleteRoom(user.index);
     targetRoom.users.push(user);
     colorConsole.green(
       `Success: User "${user.name}" (index: ${user.index}) has been successfully added to Room ID: ${targetRoom.roomId}.`,
@@ -86,50 +80,13 @@ class RoomData {
     return currentRoom?.users;
   };
 
-  public deleteRoom = (id: number, clientMap: Map<WebSocket, number>) => {
+  public deleteRoom = (id: number) => {
     const rooms = this.getRooms();
     const roomIndex = rooms.findIndex((room) => room.roomId === id);
     if (roomIndex !== -1) {
-      const rival = rooms[roomIndex].users.find((user) => user.index !== id);
-
-      if (rival) {
-        for (const [socket, userId] of clientMap.entries()) {
-          if (userId === rival.index) {
-            finishGame(NaN, socket, id);
-            break;
-          }
-        }
-      }
       rooms.splice(roomIndex, 1);
       colorConsole.yellow(`The room with id "${id}" has been deleted`);
     }
-  };
-
-  public removeRoomsWithUser = (
-    userIndex: number,
-    clientMap: Map<WebSocket, number>,
-  ) => {
-    const rooms = this.getRooms();
-    rooms.forEach((room, i) => {
-      const userFound = room.users.find(
-        (u) => u.index === userIndex && room.roomId !== userIndex,
-      );
-      if (userFound) {
-        rooms.splice(i, 1);
-        colorConsole.yellow(
-          `The room with id "${room.roomId}" with user with id "${userIndex}"has been removed`,
-        );
-        if (room.users.length === 2) {
-          for (const [socket, userId] of clientMap.entries()) {
-            if (userId === room.roomId) {
-              finishGame(NaN, socket, userId);
-              break;
-            }
-          }
-        }
-        return room;
-      }
-    });
   };
 }
 
