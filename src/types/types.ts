@@ -18,14 +18,14 @@ export interface IShipsData extends IMessage {
   ships: IShip[];
   indexPlayer: number;
 }
-
+export type shipType = 'huge' | 'large' | 'medium' | 'small' | 'empty';
 export interface IShip {
   position: {
     x: number;
     y: number;
   };
   direction: boolean;
-  type: 'huge' | 'large' | 'medium' | 'small';
+  type: shipType;
   length: number;
 }
 
@@ -48,12 +48,17 @@ export interface IWinner {
 
 export interface IGame {
   gameId: number;
+  current: 1 | 2;
   player1: IPlayer;
   player2: IPlayer;
 }
 
+export type CellType = 'empty' | 'shot' | 'killed' | 'miss';
+
 interface IPlayer {
   userId: number;
   playerId: number;
+  ownBoard: shipType[][];
+  enemyBoard: CellType[][];
   ships?: IShip[];
 }

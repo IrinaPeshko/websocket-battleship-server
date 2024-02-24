@@ -1,5 +1,8 @@
 import { IGame, IShip } from '../types/types';
 import { colorConsole } from '../utils/colorConsole';
+import { fillOwnBoard } from '../utils/fillOwnBoard';
+import { attackResult } from '../utils/getAttackResult';
+import { initializeBoard } from '../utils/initialBoard';
 
 class GameData {
   private gameDB: IGame[] = [];
@@ -10,17 +13,27 @@ class GameData {
 
   private getGames = () => this.gameDB;
 
+  public getGameById = (gameId: number) => {
+    const games = this.getGames();
+    return games.find((game) => game.gameId === gameId);
+  };
+
   public createGame = (gameId: number, user1Id: number, user2Id: number) => {
     const games = this.getGames();
     const game: IGame = {
       gameId: gameId,
+      current: 1,
       player1: {
         userId: user1Id,
         playerId: 1,
+        enemyBoard: initializeBoard(10),
+        ownBoard: initializeBoard(10),
       },
       player2: {
         userId: user2Id,
         playerId: 2,
+        enemyBoard: initializeBoard(10),
+        ownBoard: initializeBoard(10),
       },
     };
     games.push(game);
@@ -42,12 +55,26 @@ class GameData {
       colorConsole.red(`The game with id ${gameId} is not found.`);
       return null;
     }
-    if (playerId === 1) {
-      games[currentGameIndex].player1.ships = ships;
-    } else {
-      games[currentGameIndex].player2.ships = ships;
-    }
+    const player = playerId === 1 ? 'player1' : 'player2';
+    games[currentGameIndex][player].ships = ships;
+    fillOwnBoard(ships, games[currentGameIndex][player].ownBoard);
     return games[currentGameIndex];
+  };
+
+  public getAttackResult = (
+    gameId: number,
+    indexPlayer: number,
+    x: number,
+    y: number,
+  ) => {
+    const games = this.getGames();
+    const gameIndex = games.findIndex((game) => game.gameId === gameId);
+    if (gameIndex === -1) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return null;
+    }
+    const player = indexPlayer === 1 ? 'player2' : 'player1';
+    return attackResult(games[gameIndex][player].ownBoard, x, y);
   };
 }
 

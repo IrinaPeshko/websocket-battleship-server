@@ -3,6 +3,7 @@ import { registerUser } from './userMessages/reg';
 import { createNewRoom } from './userMessages/createNewRoom';
 import { addUserToRoom } from './userMessages/addUserToRoom';
 import { addShips } from './gameMessages/addShips';
+import { getAttack } from './gameMessages/getAttack';
 
 export const handleMessage = (
   socket: WebSocket,
@@ -18,6 +19,8 @@ export const handleMessage = (
     addUserToRoom(socket, data, clientMap);
   } else if (type === 'add_ships') {
     addShips(data, clientMap);
+  } else if (type === 'attack') {
+    getAttack(data, clientMap);
   } else {
     console.log('else');
   }

@@ -32,9 +32,6 @@ export const createGame = (
   if (rival) {
     gameData.createGame(roomId, roomId, rival.index);
     colorConsole.green(`The game with id "${roomId}" has been created.`);
-    colorConsole.green(
-      `The players with id "${players[0].index}" and "${players[1].index}" have started the game with id "${roomId}".`,
-    );
   } else {
     colorConsole.red(`The rival in the game with id "${roomId}" is not found`);
   }
