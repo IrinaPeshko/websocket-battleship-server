@@ -47,6 +47,7 @@ const createShipParts = (ship: IShip) => {
   }
   return {
     hits: 0,
+    length,
     shipParts,
   };
 };

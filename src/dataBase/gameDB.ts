@@ -77,7 +77,66 @@ class GameData {
       return null;
     }
     const player = indexPlayer === 1 ? 'player2' : 'player1';
-    return attackResult(games[gameIndex][player].ownBoard, x, y);
+    const result = attackResult(games[gameIndex][player].ownBoard, x, y);
+    if (!result) {
+      colorConsole.yellow(
+        `Player ${indexPlayer} in game ${gameId} has already attacked cell (${x}, ${y}). No action taken.`,
+      );
+      return null;
+    }
+    games[gameIndex][player].ownBoard[y][x].isHit = true;
+    return result;
+  };
+
+  public checkTurn = (gameId: number, playerId: number) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`Game with ID ${gameId} not found.`);
+      return false;
+    }
+
+    const currentPlayer = game.current;
+    if (currentPlayer !== playerId) {
+      colorConsole.yellow(
+        `It's not player ${playerId}'s turn in game ${gameId}. Please wait for your turn.`,
+      );
+      return false;
+    }
+    return true;
+  };
+
+  public hitsCount = (
+    gameId: number,
+    indexPlayer: number,
+    x: number,
+    y: number,
+  ) => {
+    const game = this.getGameById(gameId);
+    const player = indexPlayer === 1 ? 'player2' : 'player1';
+    if (!game) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return null;
+    }
+    const currentCell = game[player].ownBoard[y][x];
+    if (currentCell.currentShip) {
+      currentCell.currentShip.hits += 1;
+
+      console.log(`Hits on ship: ${currentCell.currentShip.hits}`);
+
+      if (currentCell.currentShip.hits === currentCell.currentShip.length) {
+        colorConsole.magenta(
+          `Ship with length ${currentCell.currentShip.length} has been sunk!`,
+        );
+        return currentCell.currentShip.shipParts;
+      } else {
+        colorConsole.magenta(
+          `Hit at (${x}, ${y})! Ship damaged but still afloat.`,
+        );
+      }
+    } else {
+      console.log('No ship at this cell or cell already hit');
+      return null;
+    }
   };
 }
 
