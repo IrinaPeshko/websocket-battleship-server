@@ -28,7 +28,6 @@ export const getAttack = (
         playerIndex === game.player1.userId ||
         playerIndex === game.player2.userId
       ) {
-        console.log(playerIndex);
         playerSocket.send(JSON.stringify(response));
       }
     });

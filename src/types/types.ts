@@ -18,7 +18,21 @@ export interface IShipsData extends IMessage {
   ships: IShip[];
   indexPlayer: number;
 }
-export type shipType = 'huge' | 'large' | 'medium' | 'small' | 'empty';
+type shipType = 'huge' | 'large' | 'medium' | 'small' | 'empty';
+
+export interface ownShip {
+  type: shipType;
+  isHit: boolean;
+  currentShip?: {
+    hits: number;
+    shipParts: {
+      isShot: boolean;
+      i: number;
+      x: number;
+      y: number;
+    }[];
+  };
+}
 export interface IShip {
   position: {
     x: number;
@@ -58,7 +72,7 @@ export type CellType = 'empty' | 'shot' | 'killed' | 'miss';
 interface IPlayer {
   userId: number;
   playerId: number;
-  ownBoard: shipType[][];
+  ownBoard: ownShip[][];
   enemyBoard: CellType[][];
   ships?: IShip[];
 }

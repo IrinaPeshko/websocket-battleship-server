@@ -10,6 +10,7 @@ export const addShips = (
 ) => {
   const { gameId, ships, indexPlayer } = JSON.parse(data.toString());
   const game = gameData.addShips(gameId, indexPlayer, ships);
+
   if (game?.player1.ships && game.player2.ships) {
     clientMap.forEach((playerIndex, playerSocket) => {
       if (playerIndex === game.player1.userId && game.player1.ships) {

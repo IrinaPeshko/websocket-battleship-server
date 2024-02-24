@@ -2,7 +2,7 @@ import { IGame, IShip } from '../types/types';
 import { colorConsole } from '../utils/colorConsole';
 import { fillOwnBoard } from '../utils/fillOwnBoard';
 import { attackResult } from '../utils/getAttackResult';
-import { initializeBoard } from '../utils/initialBoard';
+import { initializeBoard, initializeOwnBoard } from '../utils/initialBoard';
 
 class GameData {
   private gameDB: IGame[] = [];
@@ -27,13 +27,13 @@ class GameData {
         userId: user1Id,
         playerId: 1,
         enemyBoard: initializeBoard(10),
-        ownBoard: initializeBoard(10),
+        ownBoard: initializeOwnBoard(10),
       },
       player2: {
         userId: user2Id,
         playerId: 2,
         enemyBoard: initializeBoard(10),
-        ownBoard: initializeBoard(10),
+        ownBoard: initializeOwnBoard(10),
       },
     };
     games.push(game);
@@ -58,6 +58,9 @@ class GameData {
     const player = playerId === 1 ? 'player1' : 'player2';
     games[currentGameIndex][player].ships = ships;
     fillOwnBoard(ships, games[currentGameIndex][player].ownBoard);
+    colorConsole.green(
+      `The player with index "${playerId} in the game "${gameId}" added ships`,
+    );
     return games[currentGameIndex];
   };
 
