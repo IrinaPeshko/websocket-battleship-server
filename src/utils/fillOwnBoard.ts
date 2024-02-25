@@ -10,12 +10,16 @@ export const fillOwnBoard = (ships: IShip[], board: ownShip[][]) => {
         board[y + i][x] = {
           type: ship.type,
           isHit: false,
+          x,
+          y: y + i,
           currentShip,
         };
       } else {
         board[y][x + i] = {
           type: ship.type,
           isHit: false,
+          x: x + i,
+          y,
           currentShip,
         };
       }

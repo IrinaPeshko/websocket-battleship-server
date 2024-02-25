@@ -4,6 +4,7 @@ import { createNewRoom } from './userMessages/createNewRoom';
 import { addUserToRoom } from './userMessages/addUserToRoom';
 import { addShips } from './gameMessages/addShips';
 import { getAttack } from './gameMessages/getAttack';
+import { getRandomAttack } from './gameMessages/getRandomAttack';
 
 export const handleMessage = (
   socket: WebSocket,
@@ -21,6 +22,8 @@ export const handleMessage = (
     addShips(data, clientMap);
   } else if (type === 'attack') {
     getAttack(data, clientMap);
+  } else if (type === 'randomAttack') {
+    getRandomAttack(data, clientMap);
   } else {
     console.log('else');
   }

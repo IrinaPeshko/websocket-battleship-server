@@ -23,6 +23,8 @@ type shipType = 'huge' | 'large' | 'medium' | 'small' | 'empty';
 export interface ownShip {
   type: shipType;
   isHit: boolean;
+  x: number;
+  y: number;
   currentShip?: {
     hits: number;
     length: number;
@@ -69,13 +71,10 @@ export interface IGame {
   player2: IPlayer;
 }
 
-export type CellType = 'empty' | 'shot' | 'killed' | 'miss';
-
 interface IPlayer {
   userId: number;
   playerId: number;
   ownBoard: ownShip[][];
   killedShipsCount: number;
-  enemyBoard: CellType[][];
   ships?: IShip[];
 }

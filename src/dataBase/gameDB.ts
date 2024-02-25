@@ -1,8 +1,8 @@
-import { IGame, IShip } from '../types/types';
+import { IGame, IShip, ownShip } from '../types/types';
 import { colorConsole } from '../utils/colorConsole';
 import { fillOwnBoard } from '../utils/fillOwnBoard';
 import { attackResult } from '../utils/getAttackResult';
-import { initializeBoard, initializeOwnBoard } from '../utils/initialBoard';
+import { initializeOwnBoard } from '../utils/initialBoard';
 import { openAdjacentCells } from '../utils/openEmptyCellsAroundShotShip';
 
 class GameData {
@@ -37,14 +37,12 @@ class GameData {
         userId: user1Id,
         playerId: 1,
         killedShipsCount: 0,
-        enemyBoard: initializeBoard(10),
         ownBoard: initializeOwnBoard(10),
       },
       player2: {
         userId: user2Id,
         playerId: 2,
         killedShipsCount: 0,
-        enemyBoard: initializeBoard(10),
         ownBoard: initializeOwnBoard(10),
       },
     };
@@ -271,6 +269,21 @@ class GameData {
       );
       emptyCells.push(...result);
     });
+    return emptyCells;
+  };
+
+  public getEmptyCells = (gameId: number, indexPlayer: number) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return;
+    }
+    const player = indexPlayer === 1 ? 'player2' : 'player1';
+    const emptyCells: ownShip[] = [];
+    for (const row of game[player].ownBoard) {
+      const result = row.filter((cell) => !cell.isHit);
+      emptyCells.push(...result);
+    }
     return emptyCells;
   };
 }
