@@ -3,6 +3,7 @@ import { colorConsole } from '../utils/colorConsole';
 import { fillOwnBoard } from '../utils/fillOwnBoard';
 import { attackResult } from '../utils/getAttackResult';
 import { initializeBoard, initializeOwnBoard } from '../utils/initialBoard';
+import { openAdjacentCells } from '../utils/openEmptyCellsAroundShotShip';
 
 class GameData {
   private gameDB: IGame[] = [];
@@ -96,6 +97,15 @@ class GameData {
       return null;
     }
     games[gameIndex][player].ownBoard[y][x].isHit = true;
+    const currentShip = games[gameIndex][player].ownBoard[y][x].currentShip;
+    if (currentShip) {
+      const currentPart = currentShip.shipParts.find((shipPart) => {
+        return shipPart.x === x && shipPart.y === y;
+      });
+      if (currentPart) {
+        currentPart.isShot = true;
+      }
+    }
     return result;
   };
 
@@ -140,7 +150,6 @@ class GameData {
         );
         const player = indexPlayer === 1 ? 'player1' : 'player2';
         game[player].killedShipsCount += 1;
-        console.log(game[player]);
         return currentCell.currentShip.shipParts;
       } else {
         colorConsole.magenta(
@@ -170,6 +179,99 @@ class GameData {
     } else {
       return false;
     }
+  };
+
+  public openEmptyCellsAroundSunkShip = (
+    gameId: number,
+    indexPlayer: number,
+    sunkShipParts: { x: number; y: number }[],
+  ) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return;
+    }
+
+    const player = indexPlayer === 1 ? 'player2' : 'player1';
+    const board = game[player].ownBoard;
+    const result: { x: number; y: number }[] = [];
+    sunkShipParts.forEach((part) => {
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const x = part.x + i;
+          const y = part.y + j;
+
+          if (x >= 0 && x < board.length && y >= 0 && y < board[0].length) {
+            const cell = board[y][x];
+            if (cell.type === 'empty' && !cell.isHit) {
+              cell.isHit = true;
+              result.push({ x, y });
+            }
+          }
+        }
+      }
+    });
+    return result;
+  };
+
+  public openEmptyCellsAroundShotShip = (
+    gameId: number,
+    indexPlayer: number,
+    x: number,
+    y: number,
+  ) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`The game with id "${gameId}" is not found`);
+      return;
+    }
+    const player = indexPlayer === 1 ? 'player2' : 'player1';
+    const ship = game[player].ownBoard[y][x].currentShip;
+    const partToOpen: {
+      isShot: boolean;
+      i: number;
+      x: number;
+      y: number;
+    }[] = [];
+
+    if (!ship) {
+      return;
+    }
+
+    const isHorizontal = ship.direction;
+    const currentPart = ship.shipParts.find(
+      (part) => part.x === x && part.y === y,
+    );
+    if (!currentPart) {
+      return;
+    }
+    const currentPartIndex = currentPart.i;
+    const emptyCells: { x: number; y: number }[] = [];
+    partToOpen.push(currentPart);
+    const prevPart = ship.shipParts.find(
+      (part) => part.i === currentPartIndex - 1,
+    );
+    const nextPart = ship.shipParts.find(
+      (part) => part.i === currentPartIndex + 1,
+    );
+    if (prevPart?.isShot) {
+      partToOpen.push(prevPart);
+    }
+    if (nextPart?.isShot) {
+      partToOpen.push(nextPart);
+    }
+
+    partToOpen.forEach((part) => {
+      const result = openAdjacentCells(
+        game[player].ownBoard,
+        part.x,
+        part.y,
+        partToOpen.length,
+        isHorizontal,
+      );
+      emptyCells.push(...result);
+    });
+    return emptyCells;
   };
 }
 

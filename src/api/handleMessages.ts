@@ -20,7 +20,7 @@ export const handleMessage = (
   } else if (type === 'add_ships') {
     addShips(data, clientMap);
   } else if (type === 'attack') {
-    getAttack(socket, data, clientMap);
+    getAttack(data, clientMap);
   } else {
     console.log('else');
   }

@@ -48,6 +48,7 @@ const createShipParts = (ship: IShip) => {
   return {
     hits: 0,
     length,
+    direction: ship.direction,
     shipParts,
   };
 };

@@ -26,6 +26,7 @@ export interface ownShip {
   currentShip?: {
     hits: number;
     length: number;
+    direction: boolean;
     shipParts: {
       isShot: boolean;
       i: number;

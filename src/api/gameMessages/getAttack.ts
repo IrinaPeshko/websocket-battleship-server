@@ -6,7 +6,6 @@ import { roomData } from '../../dataBase/roomDB';
 import { updateRooms } from '../userMessages/updateRoom';
 
 export const getAttack = (
-  socket: WebSocket,
   data: string | object,
   clientMap: Map<WebSocket, number>,
 ) => {
@@ -37,10 +36,41 @@ export const getAttack = (
             );
             responses.push(response);
           }
+          const hitCells = gameData.openEmptyCellsAroundSunkShip(
+            gameId,
+            indexPlayer,
+            killedShip,
+          );
+          if (hitCells) {
+            for (const cell of hitCells) {
+              const response = createResponse(
+                indexPlayer,
+                'miss',
+                cell.x,
+                cell.y,
+              );
+              responses.push(response);
+            }
+          }
           isWin = gameData.checkFinishGame(gameId, indexPlayer);
         } else {
           const response = createResponse(indexPlayer, requestStatus, x, y);
           responses.push(response);
+          const emptyCells = gameData.openEmptyCellsAroundShotShip(
+            gameId,
+            indexPlayer,
+            x,
+            y,
+          );
+          emptyCells?.forEach((cell) => {
+            const newResponse = createResponse(
+              indexPlayer,
+              'miss',
+              cell.x,
+              cell.y,
+            );
+            responses.push(newResponse);
+          });
         }
       } else {
         colorConsole.magenta(
