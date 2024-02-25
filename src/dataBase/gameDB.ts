@@ -124,6 +124,15 @@ class GameData {
     return true;
   };
 
+  public changeTurn = (gameId: number, nextPlayer: 1 | 2) => {
+    const game = this.getGameById(gameId);
+    if (!game) {
+      colorConsole.red(`Game with ID ${gameId} not found.`);
+      return false;
+    }
+    game.current = nextPlayer;
+  };
+
   public checkKilledShip = (
     gameId: number,
     indexPlayer: number,

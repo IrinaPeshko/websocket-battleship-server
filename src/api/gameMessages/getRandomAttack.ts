@@ -23,6 +23,9 @@ export const getRandomAttack = (
     indexPlayer,
   });
 
-  console.log('Random cell chosen for attack:', randomCell);
+  console.log('Random cell chosen for attack:', {
+    x: randomCell.x,
+    y: randomCell.y,
+  });
   getAttack(dataToAttack, clientMap);
 };

@@ -4,6 +4,7 @@ import { colorConsole } from '../../utils/colorConsole';
 import { finishGame } from './finishGame';
 import { roomData } from '../../dataBase/roomDB';
 import { updateRooms } from '../userMessages/updateRoom';
+import { sendTurn } from '../../utils/sendTurn';
 
 export const getAttack = (
   data: string | object,
@@ -11,6 +12,7 @@ export const getAttack = (
 ) => {
   const { gameId, x, y, indexPlayer } = JSON.parse(data.toString());
   const isPlayerTern = gameData.checkTurn(gameId, indexPlayer);
+  let nextTern: 1 | 2 = indexPlayer;
   if (isPlayerTern) {
     const resultAttack = gameData.getAttackResult(gameId, indexPlayer, x, y);
     const game = gameData.getGameById(gameId);
@@ -78,6 +80,8 @@ export const getAttack = (
         );
         const response = createResponse(indexPlayer, requestStatus, x, y);
         responses.push(response);
+        nextTern = indexPlayer === 1 ? 2 : 1;
+        gameData.changeTurn(gameId, nextTern);
       }
 
       clientMap.forEach((playerIndex, playerSocket) => {
@@ -88,6 +92,7 @@ export const getAttack = (
           responses.forEach((response) => {
             playerSocket.send(JSON.stringify(response));
           });
+          sendTurn(playerSocket, nextTern);
         }
       });
 
