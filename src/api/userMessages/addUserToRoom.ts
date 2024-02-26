@@ -23,7 +23,7 @@ export const addUserToRoom = (
     const { indexRoom } = JSON.parse(data.toString());
     const addedRoomIndex = roomData.addToRoom(user, indexRoom);
     if (addedRoomIndex) {
-      createGame(addedRoomIndex, userId, clientMap);
+      createGame(addedRoomIndex, clientMap);
       updateRooms(clientMap);
     }
   }

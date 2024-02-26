@@ -75,7 +75,7 @@ export const registerUser = (
         name: name,
         index: isUserRegister.index,
         error: true,
-        errorText: `The user with index ${isUserRegister.index} is already login`,
+        errorText: `The user with name ${isUserRegister.name} is already login`,
       }),
       id: 0,
     };

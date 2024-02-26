@@ -1,8 +1,7 @@
 import WebSocket from 'ws';
 import { gameData } from '../../dataBase/gameDB';
 import { colorConsole } from '../../utils/colorConsole';
-import { sendShips } from '../../utils/sendShips';
-import { sendTurn } from '../../utils/sendTurn';
+import { sendShips, sendTurn } from '../../utils/sendResponses';
 
 export const addShips = (
   data: string | object,

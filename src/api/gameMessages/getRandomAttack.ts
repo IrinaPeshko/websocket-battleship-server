@@ -1,4 +1,5 @@
 import { gameData } from '../../dataBase/gameDB';
+import { getRandomElement } from '../../utils/getRandomElement';
 import { getAttack } from './getAttack';
 import WebSocket from 'ws';
 
@@ -14,8 +15,7 @@ export const getRandomAttack = (
     return;
   }
 
-  const randomIndex = Math.floor(Math.random() * emptyCells.length);
-  const randomCell = emptyCells[randomIndex];
+  const randomCell = getRandomElement(emptyCells);
   const dataToAttack = JSON.stringify({
     gameId,
     x: randomCell.x,

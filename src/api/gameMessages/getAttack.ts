@@ -4,9 +4,10 @@ import { colorConsole } from '../../utils/colorConsole';
 import { finishGame } from './finishGame';
 import { roomData } from '../../dataBase/roomDB';
 import { updateRooms } from '../userMessages/updateRoom';
-import { sendTurn } from '../../utils/sendTurn';
+import { sendTurn } from '../../utils/sendResponses';
 import { userData } from '../../dataBase/userDB';
 import { updateWinners } from '../userMessages/updateWinners';
+import { botAttack } from './botAttack';
 
 export const getAttack = (
   data: string | object,
@@ -15,9 +16,9 @@ export const getAttack = (
   const { gameId, x, y, indexPlayer } = JSON.parse(data.toString());
   const isPlayerTern = gameData.checkTurn(gameId, indexPlayer);
   let nextTern: 1 | 2 = indexPlayer;
+  const game = gameData.getGameById(gameId);
   if (isPlayerTern) {
     const resultAttack = gameData.getAttackResult(gameId, indexPlayer, x, y);
-    const game = gameData.getGameById(gameId);
     let isWin = false;
     if (resultAttack && game) {
       let requestStatus: 'miss' | 'shot' | 'killed' =
@@ -27,6 +28,9 @@ export const getAttack = (
         data: string;
         id: number;
       }[] = [];
+
+      const rivalPlayer = indexPlayer === 1 ? 'player2' : 'player1';
+      const rival = game[rivalPlayer];
       if (requestStatus === 'shot') {
         const killedShip = gameData.checkKilledShip(gameId, indexPlayer, x, y);
         if (killedShip) {
@@ -82,8 +86,31 @@ export const getAttack = (
         );
         const response = createResponse(indexPlayer, requestStatus, x, y);
         responses.push(response);
-        nextTern = indexPlayer === 1 ? 2 : 1;
-        gameData.changeTurn(gameId, nextTern);
+
+        if (!isNaN(rival.userId)) {
+          nextTern = indexPlayer === 1 ? 2 : 1;
+          gameData.changeTurn(gameId, nextTern);
+        } else {
+          const botResponses = [];
+          let botResult:
+            | {
+                type: string;
+                data: string;
+                id: number;
+              }[]
+            | undefined;
+          do {
+            botResult = botAttack(gameId, clientMap);
+            if (botResult) {
+              botResponses.push(...botResult);
+            }
+          } while (
+            botResult &&
+            botResult.length > 1 &&
+            !gameData.checkFinishGame(gameId, indexPlayer)
+          );
+          responses.push(...botResponses);
+        }
       }
 
       clientMap.forEach((playerIndex, playerSocket) => {
@@ -116,6 +143,15 @@ export const getAttack = (
         roomData.deleteRoom(game.gameId);
         updateRooms(clientMap);
       }
+    } else {
+      clientMap.forEach((playerIndex, playerSocket) => {
+        if (
+          playerIndex === game?.player1.userId ||
+          playerIndex === game?.player2.userId
+        ) {
+          sendTurn(playerSocket, nextTern);
+        }
+      });
     }
   }
 };

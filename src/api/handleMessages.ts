@@ -5,6 +5,7 @@ import { addUserToRoom } from './userMessages/addUserToRoom';
 import { addShips } from './gameMessages/addShips';
 import { getAttack } from './gameMessages/getAttack';
 import { getRandomAttack } from './gameMessages/getRandomAttack';
+import { createSinglePLay } from './gameMessages/createSinglePLay';
 
 export const handleMessage = (
   socket: WebSocket,
@@ -24,7 +25,9 @@ export const handleMessage = (
     getAttack(data, clientMap);
   } else if (type === 'randomAttack') {
     getRandomAttack(data, clientMap);
+  } else if (type === 'single_play') {
+    createSinglePLay(socket, clientMap);
   } else {
-    console.log('else');
+    console.log(`Received unhandled message type: '${type}' with data:`, data);
   }
 };
