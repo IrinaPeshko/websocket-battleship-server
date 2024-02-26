@@ -63,6 +63,16 @@ class UserData {
     return true;
   };
 
+  public addNewWinner = (userId: number) => {
+    const user = this.getUserById(userId);
+    if (!user) {
+      colorConsole.red(`User with index "${userId}" is not found.`);
+      return false;
+    }
+    user.countOfWins = user.countOfWins + 1;
+    return user;
+  };
+
   getWinners = (): IWinner[] => {
     const users = this.getUsers('register');
     return users

@@ -7,6 +7,7 @@ import { roomData } from '../dataBase/roomDB';
 import { updateRooms } from '../api/userMessages/updateRoom';
 import { gameData } from '../dataBase/gameDB';
 import { finishGame } from '../api/gameMessages/finishGame';
+import { updateWinners } from '../api/userMessages/updateWinners';
 
 export const startWebSocket = () => {
   const PORT = 3000;
@@ -36,6 +37,10 @@ export const startWebSocket = () => {
             player1Index === userIndex
               ? game.player2.playerId
               : game.player1.playerId;
+          const winnerId =
+            player1Index === userIndex
+              ? game.player2.userId
+              : game.player1.userId;
 
           clientMap.forEach((playerIndex, playerSocket) => {
             if (
@@ -45,6 +50,8 @@ export const startWebSocket = () => {
               finishGame(winner, playerSocket, game.gameId);
             }
           });
+          userData.addNewWinner(winnerId);
+          updateWinners(clientMap);
           gameData.deleteGame(game.gameId);
           roomData.deleteRoom(game.gameId);
         }

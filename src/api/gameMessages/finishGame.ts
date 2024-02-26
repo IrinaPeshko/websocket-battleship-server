@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
 import { gameData } from '../../dataBase/gameDB';
+import { colorConsole } from '../../utils/colorConsole';
 
 export const finishGame = (
   winId: number,
@@ -14,6 +15,6 @@ export const finishGame = (
     id: 0,
   };
   socket.send(JSON.stringify(response));
-
+  colorConsole.green(`Game ${gameId} finished. Winner id: ${winId}`);
   gameData.deleteGame(gameId);
 };

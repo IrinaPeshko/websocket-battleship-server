@@ -5,6 +5,8 @@ import { finishGame } from './finishGame';
 import { roomData } from '../../dataBase/roomDB';
 import { updateRooms } from '../userMessages/updateRoom';
 import { sendTurn } from '../../utils/sendTurn';
+import { userData } from '../../dataBase/userDB';
+import { updateWinners } from '../userMessages/updateWinners';
 
 export const getAttack = (
   data: string | object,
@@ -97,14 +99,19 @@ export const getAttack = (
       });
 
       if (isWin) {
-        clientMap.forEach((playerIndex, playerSocket) => {
+        clientMap.forEach((userIndex, playerSocket) => {
           if (
-            playerIndex === game.player1.userId ||
-            playerIndex === game.player2.userId
+            userIndex === game.player1.userId ||
+            userIndex === game.player2.userId
           ) {
             finishGame(indexPlayer, playerSocket, gameId);
           }
         });
+
+        const userId =
+          indexPlayer === 1 ? game.player1.userId : game.player2.userId;
+        userData.addNewWinner(userId);
+        updateWinners(clientMap);
         gameData.deleteGame(game.gameId);
         roomData.deleteRoom(game.gameId);
         updateRooms(clientMap);
