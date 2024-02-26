@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+
+    "target": "es2016",                              
+
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "module": "commonjs",                                
+    "rootDir": "./",                                 
+    "strict": true,                                  
+    "noImplicitAny": true,                           
+    "strictNullChecks": true,                        
+    "strictFunctionTypes": true,                      
+  }
+}
